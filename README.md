@@ -1,4 +1,4 @@
-# Teleinfo reccord and replay frames
+# Teleinfo record and replay frames
 
 
 Phyton script to replay teleinfo frames for testing
@@ -6,18 +6,18 @@ Phyton script to replay teleinfo frames for testing
 You already need to have a text file that you grabbed from a smart meter to be able to replay it. This is not described here because out this scope.
 
 
-## Rccord Usage 
+## Recording Usage 
 
 Just look into the code, it's a tool I quickly made, and can't document everything I'm doing.
 
 Run for example:
-`./tinfo_reccord.py -p /dev/tty.usbserial-14230 -m historique`
+`./tinfo_record.py -p /dev/tty.usbserial-14230 -m historique`
 
-This reccord 5 frames (default) into default file `teleinfo.txt`
+This record 5 frames (default) into default file `teleinfo.txt`
 
-`./tinfo_reccord.py -p /dev/tty.usbserial-14230 -m standard --frame 2 --file teleinfo_standard.txt`
+`./tinfo_record.py -p /dev/tty.usbserial-14230 -m standard --frame 2 --file teleinfo_standard.txt`
 
-This reccord 2 frames into file `teleinfo_standard.txt`
+This record 2 frames into file `teleinfo_standard.txt`
 
 Here is the output:
 
@@ -51,7 +51,8 @@ Waiting end of frame
 
 ## Replay Usage 
 
-To replay for example the file teleinfo.txt in legacy mode just use: 
+To replay for example the file teleinfo.txt in historique mode just use:
+
 `./tinfo_replay.py -p /dev/tty.usbserial-TINFO_1507 -m historique`
 
 
