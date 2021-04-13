@@ -45,11 +45,11 @@ def record_file(file, port='/dev/ttyAMA0',mode='standard', frame=5 ):
   f.close()
 
 # /ain entry point
-parser = argparse.ArgumentParser(description='Teleinfo frame reccorder')
-parser.add_argument('-f', '--file', type=str, default='teleinfo.txt', help='teleinfo file name to reccord to')
+parser = argparse.ArgumentParser(description='Teleinfo frame recorder')
+parser.add_argument('-f', '--file', type=str, default='teleinfo.txt', help='teleinfo file name to record to')
 parser.add_argument('-p', '--port', default='/dev/ttyAMA0',  type=str, help='serial port to read')
 parser.add_argument('-m','--mode', choices=['historique', 'standard'], default='standard', type=str, help='mode, historique or standard')
-parser.add_argument('-F', '--frame', default=5, type=int, help='number of frame to reccord')
+parser.add_argument('-F', '--frame', default=5, type=int, help='number of frame to record')
 
 args = parser.parse_args()
 record_file(**args.__dict__)
