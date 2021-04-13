@@ -4,43 +4,53 @@ import serial
 import time
 import argparse
 
-def replay_file(fname, port='/dev/ttyAMA0', baudrate=9600, loop=False, verbosity=1 ):
+def replay_file(file, port='/dev/ttyAMA0', mode='standard', loop=False):
+  baudrate = 9600
+  if mode == 'historique':
+    baudrate = 1200
+  
   # Avoid flooding serial and keep same as teleinfo speed
   # Start/Stop/7 bits/Parity = 10 bits total
   # remove 1 bits to be sure not slowinf down process
   dly = ( 10 - 1) / baudrate  ;
   # Open Serial Port as binary (do not touch anything)
-  print("Openning {} at {} bps, waiting {} after each char".format(port, baudrate, dly))
-  dev = serial.Serial(port, baudrate)
+  print("Openning {} mode {}, waiting {:.1f}ms after each char".format(port, mode, dly*1000))
+  dev = serial.Serial(port, baudrate, parity=serial.PARITY_EVEN, bytesize=serial.SEVENBITS)
   while True:
-    file = open(fname, 'rb') 
-    c = file.read(1)
+    f = open(file, 'rb') 
+    c = f.read(1)
     # loop thru file bytes
     while c:
       # show on console if asked
-      if verbosity > 0: 
-        if c[0] != 0x02 and c[0] != 0x03:
-          print(c.decode("ascii"), end='')
-        else:
-          print(c)
+      if c[0]==0x02:
+        print("<STX>", end='')
+      elif c[0]==0x03:
+        print("<ETX>", end='')
+      elif c[0]==0x09:
+        print("<TAB>", end='')
+      elif c[0]==0x0d:
+        print("<CR>")
+      elif c[0]==0x0a:
+        print("<LF>", end='')
+      else:
+        print(c.decode("ascii"), end='')
       # Send to serial
       dev.write(c)
       time.sleep(dly)
       dev.flush();
       # read next
-      c = file.read(1)
-    file.close()
+      c = f.read(1)
+    f.close()
 
     if loop == False:
       break
 
 # /ain entry point
 parser = argparse.ArgumentParser(description='Teleinfo frame replayer')
-parser.add_argument('fname', metavar='filename', type=str, help='teleinfo replay file name')
-parser.add_argument('-p', '--port', default='/dev/ttyAMA0',  type=str, help='serial port to replay on')
-parser.add_argument('-b','--baudrate', default=9600,  type=int, help='baud rate for serial replay')
-parser.add_argument('-L', '--loop', default=False, action='store_true',  help='whether to loop indefinitely')
-parser.add_argument('-v','--verbosity', default=0, action='count',  help='display output')
+parser.add_argument('-f', '--file', type=str, default='teleinfo.txt', help='teleinfo replay file name (default teleinfo.txt)')
+parser.add_argument('-p', '--port', default='/dev/ttyAMA0', type=str, help='serial port to replay on (default /dev/ttyAMA0)')
+parser.add_argument('-m','--mode', choices=['historique', 'standard'], default='standard', type=str, help='mode, historique or standard')
+parser.add_argument('-l', '--loop', default=False, action='store_true',  help='restart sending file when at the end')
 
 args = parser.parse_args()
 
