@@ -62,7 +62,7 @@ def replay_file(file, port='/dev/ttyAMA0', mode='', loop=False):
 parser = argparse.ArgumentParser(description='Teleinfo frame replayer')
 parser.add_argument('-f', '--file', type=str, default='teleinfo.txt', help='teleinfo replay file name (default teleinfo.txt)')
 parser.add_argument('-p', '--port', default='/dev/ttyAMA0', type=str, help='serial port to replay on (default /dev/ttyAMA0)')
-parser.add_argument('-m','--mode', choices=['', 'historique', 'standard'], default='', type=str, help='force mode else tries to auto-detect')
+parser.add_argument('-m','--mode', choices=['historique', 'standard'], default='', type=str, help='force mode else tries to auto-detect')
 parser.add_argument('-l', '--loop', default=False, action='store_true',  help='restart sending file when at the end')
 
 args = parser.parse_args()

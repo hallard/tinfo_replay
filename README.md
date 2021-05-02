@@ -51,7 +51,25 @@ Waiting end of frame
 
 ## Replay Usage 
 
-To replay for example the file teleinfo.txt in historique mode just use:
+Use `--help` switch 
+
+```
+$ ./tinfo_replay-help
+usage: tinfo_replay.py [-h] [-f FILE] [-p PORT] [-m {historique,standard}] [-l]
+
+Teleinfo frame replayer
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  teleinfo replay file name (default teleinfo.txt)
+  -p PORT, --port PORT  serial port to replay on (default /dev/ttyAMA0)
+  -m {historique,standard}, --mode {historique,standard}
+                        force mode else tries to auto-detect
+  -l, --loop            restart sending file when at the end
+
+```
+
+To replay for example the file `teleinfo.txt` in historique mode just use:
 
 `./tinfo_replay.py -p /dev/tty.usbserial-TINFO_1507 -m historique`
 
@@ -84,7 +102,7 @@ Openning /dev/tty.usbserial-TINFO_1507 mode historique, waiting 7.5ms after each
 <ETX>charles@mac-office:tinfo_replay$ 
 ```
 
-Tip : You can omit the -m parameter, in this case the player will try to auto detect mode reading in the file as follow:
+Tip : You can omit the `-m` parameter, in this case the player will try to auto detect mode reading in the file as follow:
 
 - If it find `ADCO` set mode historique
 - If it find `ADSC` set mode standard
