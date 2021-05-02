@@ -4,14 +4,27 @@ import serial
 import time
 import argparse
 
-def replay_file(file, port='/dev/ttyAMA0', mode='standard', loop=False):
+def replay_file(file, port='/dev/ttyAMA0', mode='', loop=False):
+
+  if mode == '':
+    print("Autodetecting mode from {}".format(file))
+    with open(file) as f:
+      for line in f:
+        if "ADCO" in line:
+          mode = 'historique'
+          break
+        elif "ADSC" in line:
+          mode = 'standard'
+          break
+      f.close()
+
   baudrate = 9600
   if mode == 'historique':
     baudrate = 1200
   
   # Avoid flooding serial and keep same as teleinfo speed
   # Start/Stop/7 bits/Parity = 10 bits total
-  # remove 1 bits to be sure not slowinf down process
+  # remove 1 bits to be sure not slowing down process
   dly = ( 10 - 1) / baudrate  ;
   # Open Serial Port as binary (do not touch anything)
   print("Openning {} mode {}, waiting {:.1f}ms after each char".format(port, mode, dly*1000))
@@ -49,7 +62,7 @@ def replay_file(file, port='/dev/ttyAMA0', mode='standard', loop=False):
 parser = argparse.ArgumentParser(description='Teleinfo frame replayer')
 parser.add_argument('-f', '--file', type=str, default='teleinfo.txt', help='teleinfo replay file name (default teleinfo.txt)')
 parser.add_argument('-p', '--port', default='/dev/ttyAMA0', type=str, help='serial port to replay on (default /dev/ttyAMA0)')
-parser.add_argument('-m','--mode', choices=['historique', 'standard'], default='standard', type=str, help='mode, historique or standard')
+parser.add_argument('-m','--mode', choices=['', 'historique', 'standard'], default='', type=str, help='force mode else tries to auto-detect')
 parser.add_argument('-l', '--loop', default=False, action='store_true',  help='restart sending file when at the end')
 
 args = parser.parse_args()
