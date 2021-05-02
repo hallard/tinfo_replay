@@ -53,7 +53,7 @@ Waiting end of frame
 
 Use `--help` switch 
 
-```
+```shell
 $ ./tinfo_replay-help
 usage: tinfo_replay.py [-h] [-f FILE] [-p PORT] [-m {historique,standard}] [-l]
 
@@ -69,7 +69,7 @@ optional arguments:
 
 ```
 
-To replay for example the file `teleinfo.txt` in historique mode just use:
+To replay for example the file `teleinfo.txt in historique mode just use:
 
 `./tinfo_replay.py -p /dev/tty.usbserial-TINFO_1507 -m historique`
 
