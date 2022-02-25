@@ -1,28 +1,37 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 
 import serial
 import time
 import argparse
+import socket
 
 def record_file(file, port='/dev/ttyAMA0',mode='standard', frame=5 ):
   baudrate = 9600
   if mode == 'historique':
     baudrate = 1200
-  print("Openning {} at {} bps and wrtiting to file {}".format(port, baudrate, file))
-  ser = serial.Serial(port, baudrate,  parity=serial.PARITY_EVEN, bytesize=serial.SEVENBITS)
+  if port[0]=="/":
+    print(f"Openning {port} at {baudrate} bps and writing to file {file}")
+    ser = serial.Serial(port, baudrate,  parity=serial.PARITY_EVEN, bytesize=serial.SEVENBITS)
+    getChar = lambda n : ser.read(n)
+  else:
+    addr = port.split(':')
+    print(f"Openning {addr[0]}:{addr[1]} at {baudrate} bps and writing to file {file}")
+    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp.connect((addr[0],int(addr[1])))
+    getChar = lambda n : tcp.recv(n)
   f = open(file, 'wb')
   # avoid garbage at startup
   for x in range(16):
-    ser.read(1)
+    getChar(1)
 
   print("Waiting end of frame")
-  while ser.read(1)[0]!=0x03:
+  while getChar(1)[0]!=0x03:
     pass
 
   fullframe = False
   # loop thru serial
   while frame or fullframe==False:
-    c = ser.read(1)
+    c = getChar(1)
     if c[0]==0x02:
       print("<STX>", end='')
       fullframe = False
